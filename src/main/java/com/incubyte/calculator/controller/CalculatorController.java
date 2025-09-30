@@ -1,13 +1,14 @@
 package com.incubyte.calculator.controller;
 
+import com.incubyte.calculator.dto.RequestDTO;
+import com.incubyte.calculator.dto.ResponseDTO;
 import com.incubyte.calculator.service.CalculatorService;
+import jdk.jfr.ContentType;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/calculator")
@@ -21,9 +22,9 @@ public class CalculatorController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Integer> add(String numbers) {
-        int result = calculatorService.add(numbers);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseDTO> add(@RequestBody RequestDTO requestDTO) {
+        int result = calculatorService.add(requestDTO.getInput());
+        return new ResponseEntity<>(new ResponseDTO(result), HttpStatus.OK);
     }
 }
