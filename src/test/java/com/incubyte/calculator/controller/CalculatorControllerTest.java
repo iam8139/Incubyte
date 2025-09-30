@@ -6,6 +6,8 @@ import com.incubyte.calculator.dto.RequestDTO;
 import com.incubyte.calculator.expections.InvalidInputException;
 import com.incubyte.calculator.service.CalculatorService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -65,5 +67,15 @@ public class CalculatorControllerTest {
                .content(objectMapper.writeValueAsString(requestDTO)))
                .andExpect(status().isBadRequest())
                .andExpect(jsonPath("$.msg", is("Invalid characters found in the input")));
+    }
+
+    @Test
+    void test_Add_EmptyString() throws Exception {
+
+    }
+
+    @Test
+    void test_Add_NullString() throws Exception {
+
     }
 }
