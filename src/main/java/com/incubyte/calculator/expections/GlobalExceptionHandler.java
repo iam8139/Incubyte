@@ -12,4 +12,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ValidationError> handleInvalidInputException(InvalidInputException ex) {
         return new ResponseEntity<>(new ValidationError(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ValidationError> handleNullPointerException(InvalidInputException ex) {
+        return new ResponseEntity<>(new ValidationError(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }
