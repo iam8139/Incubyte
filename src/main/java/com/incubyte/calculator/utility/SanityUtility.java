@@ -15,6 +15,9 @@ public class SanityUtility {
         return CUSTOM_DELIMITER.matcher(input).find();
     }
     public static String findDelimiter(String input) {
+        return containsCustomDelimiter(input) ? findCustomDelimiter(input) + "|\\n" : "[,\\n]";
+    }
+    public static String findDelimiterForNegativeCheck(String input) {
         return containsCustomDelimiter(input) ? findCustomDelimiter(input) : "[,\\n]";
     }
     public static String findNumbersPart(String input) {
