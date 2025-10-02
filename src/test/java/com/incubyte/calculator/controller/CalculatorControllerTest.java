@@ -49,7 +49,9 @@ public class CalculatorControllerTest {
                 Arguments.of("-1, 1", "negative numbers not allowed -1"),
                 Arguments.of( "-1, 2, -2", "negative numbers not allowed -1, -2"),
                 Arguments.of( "1, -2, -2", "negative numbers not allowed -2"),
-                Arguments.of("3, -3, -5, -4", "negative numbers not allowed -3, -4, -5")
+                Arguments.of("3, -3, -5, -4", "negative numbers not allowed -3, -4, -5"),
+                Arguments.of( "//;\n-1; 2; -2", "negative numbers not allowed -1, -2"),
+                Arguments.of( "//-\n1- 2- -2", "Invalid delimiter -")
         );
     }
 
