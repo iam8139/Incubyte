@@ -67,7 +67,7 @@ public class CalculatorControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1 as 2", "1.2", "1%2"})
+    @ValueSource(strings = {"1 as 2", "1.2", "1%2", "//;\n1,2", "//;\n1.2", "//;\n1&2"})
     void test_Add_InvalidString(String input) throws Exception {
         // Given
         RequestDTO requestDTO = new RequestDTO(input);
