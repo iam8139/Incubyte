@@ -4,7 +4,6 @@ import com.incubyte.calculator.dto.RequestDTO;
 import com.incubyte.calculator.dto.ResponseDTO;
 import com.incubyte.calculator.service.CalculatorService;
 import com.incubyte.calculator.validators.CalculatorValidators;
-import jdk.jfr.ContentType;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,11 +25,12 @@ public class CalculatorController {
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> add(@RequestBody RequestDTO requestDTO) {
 
-        CalculatorValidators.isNullOrEmpty(requestDTO.getInput());
+        if (requestDTO.getInput().isBlank()) return ResponseEntity.ok(new ResponseDTO(0));
+
         CalculatorValidators.validateInvalidCharacter(requestDTO.getInput());
         CalculatorValidators.validateNegativeNumbers(requestDTO.getInput());
 
         int result = calculatorService.add(requestDTO.getInput());
-        return new ResponseEntity<>(new ResponseDTO(result), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseDTO(result));
     }
 }

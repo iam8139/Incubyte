@@ -1,14 +1,11 @@
 package com.incubyte.calculator.validators;
 
-import com.incubyte.calculator.expections.EmptyInputException;
 import com.incubyte.calculator.expections.InvalidInputException;
 import com.incubyte.calculator.expections.NegativeNumberException;
 import com.incubyte.calculator.utility.SanityUtility;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -19,16 +16,6 @@ public class CalculatorValidators {
     private static final Pattern NUMBER_VALIDATOR = Pattern.compile("^-?\\d+$");
     private CalculatorValidators() {
         throw new IllegalArgumentException("Object Creation not allowed");
-    }
-    private static void isNull(String input) {
-        if (input == null) throw new NullPointerException("Input is NULL");
-    }
-    private static void isEmpty(String input) {
-        if (input.isBlank()) throw new EmptyInputException("Input is Empty");
-    }
-    public static void isNullOrEmpty(String input) {
-        isNull(input);
-        isEmpty(input);
     }
     public static void validateInvalidCharacter(String input) {
         String customDelimiter = "[,\\n]";
