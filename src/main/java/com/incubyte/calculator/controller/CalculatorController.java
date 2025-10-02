@@ -19,8 +19,8 @@ public class CalculatorController {
     private final CalculatorService calculatorService;
 
     @GetMapping("/health-check")
-    public ResponseEntity<?> healthCheck() {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> healthCheck() {
+        return new ResponseEntity<>("UP", HttpStatus.OK);
     }
 
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
