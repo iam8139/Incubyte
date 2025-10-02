@@ -52,10 +52,11 @@ public class CalculatorControllerTest {
                 .andExpect(jsonPath("$.sum", is(2)));
     }
 
-    @Test
-    void test_Add_InvalidString() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"1 as 2", "1.2", "1%2"})
+    void test_Add_InvalidString(String input) throws Exception {
         // Given
-        RequestDTO requestDTO = new RequestDTO("1 as 2");
+        RequestDTO requestDTO = new RequestDTO(input);
 
         // When
         when(calculatorService.add("1 as 2"))
