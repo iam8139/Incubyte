@@ -55,26 +55,37 @@ public class CalculatorControllerTest {
         );
     }
 
+    private static Stream<Arguments> validInput() {
+        return Stream.of(
+                Arguments.of("1, 2", 3),
+                Arguments.of("1, 2, 4,7, 9", 23),
+                Arguments.of("//;\n1; 2; 3", 6),
+                Arguments.of("//;\n1\n2; 3", 6),
+                Arguments.of("1\n2; 3", 6)
+        );
+    }
+
     @Test
     void test_HealthCheck() throws Exception {
         mockMvc.perform(get("/calculator/health-check"))
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void test_Add_ValidString() throws Exception {
+    @ParameterizedTest
+    @MethodSource("validInput")
+    void test_Add_ValidString(String input, Integer sum) throws Exception {
         // Given
-        RequestDTO requestDTO = new RequestDTO("1, 1");
+        RequestDTO requestDTO = new RequestDTO(input);
 
         // When
-        when(calculatorService.add("1, 1")).thenReturn(2);
+        when(calculatorService.add(input)).thenReturn(sum);
 
         // Then
         mockMvc.perform(post("/calculator/add")
                 .header("Content-Type", "application/json")
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.sum", is(2)));
+                .andExpect(jsonPath("$.sum", is(sum)));
     }
 
     @ParameterizedTest
