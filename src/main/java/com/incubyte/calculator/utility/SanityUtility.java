@@ -2,6 +2,8 @@ package com.incubyte.calculator.utility;
 
 import com.incubyte.calculator.expections.InvalidInputException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,5 +25,13 @@ public class SanityUtility {
         }
 
         return customDelimiterMatcher.group(1);
+    }
+    public static List<Integer> findNegativeNumbers(String input, String delimiter) {
+        return Arrays.stream(input.split(delimiter))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Integer::parseInt)
+                .filter(i -> i < 0)
+                .toList();
     }
 }

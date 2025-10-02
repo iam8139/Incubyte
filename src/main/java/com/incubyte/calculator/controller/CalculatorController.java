@@ -25,8 +25,11 @@ public class CalculatorController {
 
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> add(@RequestBody RequestDTO requestDTO) {
+
         CalculatorValidators.isNullOrEmpty(requestDTO.getInput());
         CalculatorValidators.validateInvalidCharacter(requestDTO.getInput());
+        CalculatorValidators.validateNegativeNumbers(requestDTO.getInput());
+
         int result = calculatorService.add(requestDTO.getInput());
         return new ResponseEntity<>(new ResponseDTO(result), HttpStatus.OK);
     }
