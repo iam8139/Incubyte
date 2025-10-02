@@ -44,6 +44,15 @@ public class CalculatorControllerTest {
         );
     }
 
+    private static Stream<Arguments> negativeNumbersAndMessages() {
+        return Stream.of(
+                Arguments.of("-1, 1", "negative numbers not allowed -1"),
+                Arguments.of( "-1, 2, -2", "negative numbers not allowed -1, -2"),
+                Arguments.of( "1, -2, -2", "negative numbers not allowed -2"),
+                Arguments.of("3, -3, -5, -4", "negative numbers not allowed -3, -4, -5")
+        );
+    }
+
     @Test
     void test_HealthCheck() throws Exception {
         mockMvc.perform(get("/calculator/health-check"))
@@ -95,8 +104,16 @@ public class CalculatorControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"-1, 1", "-2, 2, -2", "3, -3, 4, -4"})
-    void test_Add_NegativeNumbers(String input) throws Exception {
+    @MethodSource("negativeNumbersAndMessages")
+    void test_Add_NegativeNumbers(String input, String error) throws Exception {
+        // Given
+        RequestDTO requestDTO = new RequestDTO(input);
 
+        // Then
+        mockMvc.perform(post("/calculator/add")
+                        .header("Content-Type", "application/json")
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.msg", is(error)));
     }
 }
