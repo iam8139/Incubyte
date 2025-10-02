@@ -29,7 +29,7 @@ public class CalculatorValidators {
         isNull(input);
         isEmpty(input);
     }
-    public static void containsInvalidCharacter(String input) {
+    public static void validateInvalidCharacter(String input) {
         if (!containsCustomDelimiter(input)) {
             if (!INVALID_CHAR.matcher(input).matches()) throw new InvalidInputException("Input contains invalid character");
         } else {
