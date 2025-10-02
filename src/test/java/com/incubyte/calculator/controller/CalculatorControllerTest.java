@@ -72,16 +72,12 @@ public class CalculatorControllerTest {
         // Given
         RequestDTO requestDTO = new RequestDTO(input);
 
-        // When
-        when(calculatorService.add("1 as 2"))
-                .thenThrow(new InvalidInputException("Invalid characters found in the input"));
-
         // Then
         mockMvc.perform(post("/calculator/add")
                .header("Content-Type", "application/json")
                .content(objectMapper.writeValueAsString(requestDTO)))
                .andExpect(status().isBadRequest())
-               .andExpect(jsonPath("$.msg", is("Invalid characters found in the input")));
+               .andExpect(jsonPath("$.msg", is("Input contains invalid character")));
     }
 
     @ParameterizedTest
@@ -89,12 +85,6 @@ public class CalculatorControllerTest {
     void test_Add_NullOrEmptyString(String input, String error) throws Exception {
         // Given
         RequestDTO requestDTO = new RequestDTO(input);
-
-        // When
-        when(calculatorService.add(""))
-                .thenThrow(new EmptyInputException("Input is Empty"));
-        when(calculatorService.add(any()))
-                .thenThrow(new NullPointerException("Input is NULL"));
 
         // Then
         mockMvc.perform(post("/calculator/add")
