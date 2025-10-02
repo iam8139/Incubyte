@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,13 +36,6 @@ public class CalculatorControllerTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static Stream<Arguments> nullOrEmptyInputsAndMessages() {
-        return Stream.of(
-                Arguments.of(null, "Input is NULL"),
-                Arguments.of("", "Input is Empty")
-        );
-    }
-
     private static Stream<Arguments> negativeNumbersAndMessages() {
         return Stream.of(
                 Arguments.of("-1, 1", "negative numbers not allowed -1"),
@@ -56,6 +50,7 @@ public class CalculatorControllerTest {
 
     private static Stream<Arguments> validInput() {
         return Stream.of(
+                Arguments.of("", 0),
                 Arguments.of("1, 2", 3),
                 Arguments.of("1, 2, 4,7, 9", 23),
                 Arguments.of("//;\n1; 2; 3", 6),
@@ -100,20 +95,6 @@ public class CalculatorControllerTest {
                .content(objectMapper.writeValueAsString(requestDTO)))
                .andExpect(status().isBadRequest())
                .andExpect(jsonPath("$.msg", is("Input contains invalid character")));
-    }
-
-    @ParameterizedTest
-    @MethodSource("nullOrEmptyInputsAndMessages")
-    void test_Add_NullOrEmptyString(String input, String error) throws Exception {
-        // Given
-        RequestDTO requestDTO = new RequestDTO(input);
-
-        // Then
-        mockMvc.perform(post("/calculator/add")
-                        .header("Content-Type", "application/json")
-                        .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg", is(error)));
     }
 
     @ParameterizedTest

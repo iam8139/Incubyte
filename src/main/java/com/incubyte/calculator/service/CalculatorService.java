@@ -1,5 +1,5 @@
 package com.incubyte.calculator.service;
 
 public interface CalculatorService {
-    Integer add(String numbers);
+    int add(String numbers);
 }

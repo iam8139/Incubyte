@@ -14,7 +14,7 @@ import static com.incubyte.calculator.utility.SanityUtility.findNumbersPart;
 @Service
 public class CalculatorServiceImpl implements CalculatorService {
     @Override
-    public Integer add(String input) {
+    public int add(String input) {
         return findSum(findNumbersPart(input), findDelimiter(input)).orElseThrow();
     }
 
