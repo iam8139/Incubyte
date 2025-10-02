@@ -60,7 +60,7 @@ public class CalculatorValidators {
 
     public static void validateNegativeNumbers(String input) {
         if (input.contains("-")) {
-            String delimiter = findDelimiter(input);
+            String delimiter = findDelimiterForNegativeCheck(input);
             String numbersPart = findNumbersPart(input);
 
             if (delimiter.equals("-")) throw new InvalidInputException("Invalid delimiter -");

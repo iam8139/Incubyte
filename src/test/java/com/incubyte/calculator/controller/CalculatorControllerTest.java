@@ -1,15 +1,14 @@
 package com.incubyte.calculator.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incubyte.calculator.dto.RequestDTO;
-import com.incubyte.calculator.expections.EmptyInputException;
 import com.incubyte.calculator.expections.GlobalExceptionHandler;
-import com.incubyte.calculator.expections.InvalidInputException;
 import com.incubyte.calculator.service.CalculatorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -18,13 +17,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.stream.Stream;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.Matchers.is;
 
 @WebMvcTest(CalculatorController.class)
 @Import(GlobalExceptionHandler.class)
@@ -51,7 +49,8 @@ public class CalculatorControllerTest {
                 Arguments.of( "1, -2, -2", "negative numbers not allowed -2"),
                 Arguments.of("3, -3, -5, -4", "negative numbers not allowed -3, -4, -5"),
                 Arguments.of( "//;\n-1; 2; -2", "negative numbers not allowed -1, -2"),
-                Arguments.of( "//-\n1- 2- -2", "Invalid delimiter -")
+                Arguments.of( "//-\n1- 2- -2", "Invalid delimiter -"),
+                Arguments.of( "//-\n1- 2-\n -2", "Invalid delimiter -")
         );
     }
 
@@ -61,7 +60,8 @@ public class CalculatorControllerTest {
                 Arguments.of("1, 2, 4,7, 9", 23),
                 Arguments.of("//;\n1; 2; 3", 6),
                 Arguments.of("//;\n1\n2; 3", 6),
-                Arguments.of("1\n2, 3", 6)
+                Arguments.of("1\n2, 3", 6),
+                Arguments.of("//;\n1;2\n3;4", 10)
         );
     }
 
