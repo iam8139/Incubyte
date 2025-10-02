@@ -2,8 +2,6 @@ package com.incubyte.calculator.dto;
 
 import lombok.*;
 
-import java.util.Date;
-
 @AllArgsConstructor
 @Getter
 @Setter

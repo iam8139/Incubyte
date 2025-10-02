@@ -1,15 +1,22 @@
 package com.incubyte.calculator.validators;
 
+import com.incubyte.calculator.expections.EmptyInputException;
+
 public class CalculatorValidators {
     private CalculatorValidators() {
 
     }
 
-    public static void isNull(String input) {
+    private static void isNull(String input) {
         if (input == null) throw new NullPointerException("Input is NULL");
     }
 
-    public static void isEmpty(String input) {
-        if (input.isBlank()) throw new NullPointerException("Input is Empty");
+    private static void isEmpty(String input) {
+        if (input.isBlank()) throw new EmptyInputException("Input is Empty");
+    }
+
+    public static void isNullOrEmpty(String input) {
+        isNull(input);
+        isEmpty(input);
     }
 }

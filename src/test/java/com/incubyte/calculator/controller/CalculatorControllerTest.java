@@ -3,16 +3,22 @@ package com.incubyte.calculator.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incubyte.calculator.dto.RequestDTO;
+import com.incubyte.calculator.expections.EmptyInputException;
+import com.incubyte.calculator.expections.GlobalExceptionHandler;
 import com.incubyte.calculator.expections.InvalidInputException;
 import com.incubyte.calculator.service.CalculatorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.stream.Stream;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -21,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.is;
 
 @WebMvcTest(CalculatorController.class)
+@Import(GlobalExceptionHandler.class)
 public class CalculatorControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -29,6 +36,13 @@ public class CalculatorControllerTest {
     private CalculatorService calculatorService;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static Stream<Arguments> nullOrEmptyInputsAndMessages() {
+        return Stream.of(
+                Arguments.of(null, "Input is NULL"),
+                Arguments.of("", "Input is Empty")
+        );
+    }
 
     @Test
     void test_HealthCheck() throws Exception {
@@ -70,13 +84,29 @@ public class CalculatorControllerTest {
                .andExpect(jsonPath("$.msg", is("Invalid characters found in the input")));
     }
 
-    @Test
-    void test_Add_EmptyString() throws Exception {
+    @ParameterizedTest
+    @MethodSource("nullOrEmptyInputsAndMessages")
+    void test_Add_NullOrEmptyString(String input, String error) throws Exception {
+        // Given
+        RequestDTO requestDTO = new RequestDTO(input);
 
+        // When
+        when(calculatorService.add(""))
+                .thenThrow(new EmptyInputException("Input is Empty"));
+        when(calculatorService.add(any()))
+                .thenThrow(new NullPointerException("Input is NULL"));
+
+        // Then
+        mockMvc.perform(post("/calculator/add")
+                        .header("Content-Type", "application/json")
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.msg", is(error)));
     }
 
-    @Test
-    void test_Add_NullString() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"-1, 1", "-2, 2, -2", "3, -3, 4, -4"})
+    void test_Add_NegativeNumbers(String input) throws Exception {
 
     }
 }

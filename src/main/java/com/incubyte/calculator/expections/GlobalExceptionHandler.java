@@ -8,13 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(InvalidInputException.class)
-    public ResponseEntity<ValidationError> handleInvalidInputException(InvalidInputException ex) {
-        return new ResponseEntity<>(new ValidationError(ex.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<ValidationError> handleNullPointerException(InvalidInputException ex) {
+    @ExceptionHandler({EmptyInputException.class, NullPointerException.class, InvalidInputException.class})
+    public ResponseEntity<ValidationError> handleNullPointerException(Exception ex) {
         return new ResponseEntity<>(new ValidationError(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
