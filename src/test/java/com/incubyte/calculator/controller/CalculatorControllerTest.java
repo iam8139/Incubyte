@@ -61,7 +61,7 @@ public class CalculatorControllerTest {
                 Arguments.of("1, 2, 4,7, 9", 23),
                 Arguments.of("//;\n1; 2; 3", 6),
                 Arguments.of("//;\n1\n2; 3", 6),
-                Arguments.of("1\n2; 3", 6)
+                Arguments.of("1\n2, 3", 6)
         );
     }
 
@@ -89,7 +89,7 @@ public class CalculatorControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1 as 2", "1.2", "1%2", "//;\n1,2", "//;\n1.2", "//;\n1&2"})
+    @ValueSource(strings = {"1 as 2", "1.2", "1%2", "//;\n1,2", "//;\n1.2", "//;\n1&2", "//;\n1\n,2"})
     void test_Add_InvalidString(String input) throws Exception {
         // Given
         RequestDTO requestDTO = new RequestDTO(input);

@@ -12,24 +12,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.incubyte.calculator.utility.SanityUtility.*;
+
 public class CalculatorValidators {
     private static final Pattern INVALID_CHAR = Pattern.compile("[^0-9\\s-,]+");
-    private static final Pattern CUSTOM_DELIMITER = Pattern.compile("^//(.+)\n");
     private static final Pattern NUMBER_VALIDATOR = Pattern.compile("^-?\\d+$");
     private CalculatorValidators() {
         throw new IllegalArgumentException("Object Creation not allowed");
     }
-
     private static void isNull(String input) {
         if (input == null) throw new NullPointerException("Input is NULL");
     }
-
     private static void isEmpty(String input) {
         if (input.isBlank()) throw new EmptyInputException("Input is Empty");
-    }
-
-    private static boolean containsCustomDelimiter(String input) {
-        return CUSTOM_DELIMITER.matcher(input).find();
     }
     public static void isNullOrEmpty(String input) {
         isNull(input);
@@ -41,12 +36,13 @@ public class CalculatorValidators {
         if (containsCustomDelimiter(input)) {
             customDelimiter = SanityUtility.findCustomDelimiter(input);
             numbersPart = SanityUtility.findLegalString(input);
-            String numbersRegexString = "^[0-9\\s-" + Pattern.quote(customDelimiter) + "]*$";
+            String numbersRegexString = "^[0-9\\s-" + Pattern.quote(customDelimiter) + "\\n]+";
             Pattern numbersPattern = Pattern.compile(numbersRegexString);
 
             if (!numbersPattern.matcher(numbersPart).matches()) {
                 throw new InvalidInputException("Input contains invalid character");
             }
+            customDelimiter = Pattern.compile(customDelimiter) + "|\\n";
         } else {
             if (INVALID_CHAR.matcher(input).find())
                 throw new InvalidInputException("Input contains invalid character");
@@ -64,8 +60,8 @@ public class CalculatorValidators {
 
     public static void validateNegativeNumbers(String input) {
         if (input.contains("-")) {
-            String delimiter = containsCustomDelimiter(input) ? SanityUtility.findCustomDelimiter(input) : "[,\\n]";
-            String numbersPart = containsCustomDelimiter(input) ? SanityUtility.findLegalString(input) : input;
+            String delimiter = findDelimiter(input);
+            String numbersPart = findNumbersPart(input);
 
             if (delimiter.equals("-")) throw new InvalidInputException("Invalid delimiter -");
 

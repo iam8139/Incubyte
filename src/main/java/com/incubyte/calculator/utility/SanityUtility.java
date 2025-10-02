@@ -11,6 +11,15 @@ public class SanityUtility {
     private SanityUtility() {}
 
     private static final Pattern CUSTOM_DELIMITER = Pattern.compile("^//(.+)\n");
+    public static boolean containsCustomDelimiter(String input) {
+        return CUSTOM_DELIMITER.matcher(input).find();
+    }
+    public static String findDelimiter(String input) {
+        return containsCustomDelimiter(input) ? findCustomDelimiter(input) : "[,\\n]";
+    }
+    public static String findNumbersPart(String input) {
+        return containsCustomDelimiter(input) ? findLegalString(input) : input;
+    }
     public static String findLegalString(String input) {
         Matcher customDelimiterMatcher = CUSTOM_DELIMITER.matcher(input);
         if (!customDelimiterMatcher.find()) {
